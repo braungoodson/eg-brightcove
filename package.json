@@ -1,0 +1,19 @@
+{
+  "name": "jta-template",
+  "version": "0.2.1",
+  "description": "jquery, twitter, angularjs; template; +server(express);",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js",
+    "postinstall": "./node_modules/bower/bin/bower install"
+  },
+  "author": "Braun Goodson <braungoodson@gmail.com>",
+  "repository": "https://github.com/braungoodson/jta-template",
+  "license": "MIT",
+  "dependencies": {
+    "bower": "^1.3.9",
+    "express": "~4.2.0",
+    "forever": "^0.11.1"
+  }
+}
