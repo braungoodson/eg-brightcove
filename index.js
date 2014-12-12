@@ -3,66 +3,21 @@ angular.module('app',['gcc.carousel','gcc.video']);
 angular.module('brightcove',[])
 
 	.service('Brightcove',['$timeout','$rootScope',function($timeout,$rootScope){
-		var bc, ml, me, ex, cm, pm;
-		$rootScope.$on('brightcove:init',function(event,args){
-			console.log(event.name);
-			console.log(args);
-		});
-		$rootScope.$on('brightcove:load',function(event,args){
-			console.log(event.name);
-			console.log(args);
-			bc = brightcove.api;
-			ml = bc.modules.APIModules;
-			me = bc.events.MediaEvent;
-			ex = bc.getExperience(args.eid);
-			cm = ex.getModule(ml.CONTENT);
-			pm = ex.getModule(ml.VIDEO_PLAYER);
-		});
-		$rootScope.$on('brightcove:ready',function(event,args){
-			console.log(event.name);
-			console.log(args);
-			pm.addEventListener(me.BEGIN,function(){
-				$rootScope.$broadcast('player:begin',{});
-			});
-			pm.addEventListener(me.PLAY,function(){
-				$rootScope.$broadcast('player:play',{});
-			});
-			pm.addEventListener(me.STOP,function(){
-				$rootScope.$broadcast('player:stop',{});
-			});
-			pm.addEventListener(me.COMPLETE,function(){
-				$rootScope.$broadcast('player:complete',{});
-			});
-			pm.addEventListener(me.PROGRESS,function(){
-				$rootScope.$broadcast('player:progress',{});
-			});
-			pm.addEventListener(me.CHANGE,function(){
-				$rootScope.$broadcast('player:change',{});
-			});
-			pm.addEventListener(me.ERROR,function(){
-				$rootScope.$broadcast('player:error',{});
-			});
-		});
+		var player;
 		var s = {};
 		s.init = function() {
-			$timeout(function(){
-				brightcove.createExperiences();
+			videojs('eg-player').ready(function(){
+				player = this;
 				$rootScope.$broadcast('brightcove:init',{});
-			},1);
+			});
 		};
-		s.enqueue = function(video) {
+		s.cue = function(video) {
 			switch (video.type) {
 				case 'url': 
-					pm.getCurrentVideo(function(v){
-						v.defaultURL = video.url;
-						v.videoStillURL = video.videoStill;
-						v.thumbnailURL = video.thumbnail;
-						v.displayName = video.title;
-						v.shortDescription = video.videoCaption;
-						cm.updateMedia(v,function(){
-							console.log(arguments);
-							pm.cueVideoByID(v.id);
-						});
+					player = videojs('eg-player');
+					player.src({
+						src: video.url,
+						type: video.mimetype
 					});
 					break;
 				case 'id': 
@@ -71,46 +26,6 @@ angular.module('brightcove',[])
 			}
 		};
 		return s;
-	}])
-
-	.directive('bcVideoPlayer',['$rootScope','Brightcove',function($rootScope,Brightcove){
-		window.gcc = window.gcc || {};
-		gcc.bc = gcc.bc || {};
-		gcc.bc.onTemplateLoad = function(eid) {
-			$rootScope.$broadcast('player:load',{eid:eid});
-			$rootScope.$broadcast('brightcove:load',{eid:eid});
-		};
-		gcc.bc.onTemplateReady = function() {
-			$rootScope.$broadcast('player:ready',{});
-			$rootScope.$broadcast('brightcove:ready',{});
-		};		
-		return {
-			restrict: 'A',
-			scope: {
-				eid: '@',
-				pid: '@',
-				pkey: '@',
-				height: '@',
-				width: '@',
-				vid: '@'
-			},
-			replace: true,
-			template: ''+
-				'<object id="{{eid}}" class="BrightcoveExperience">'+
-					'<param name="bgcolor" value="#FFFFFF" />'+
-					'<param name="width" value="{{width}}" />'+
-					'<param name="height" value="{{height}}" />'+
-					'<param name="playerID" value="{{pid}}" />'+
-					'<param name="playerKey" value="{{pkey}}" />'+
-					'<param name="isVid" value="true" />'+
-					'<param name="isUI" value="true" />'+
-					'<param name="dynamicStreaming" value="true" />'+
-					'<param name="@videoPlayer" value="{{vid}}"; />'+
-					'<param name="includeAPI" value="true" />'+
-					'<param name="templateLoadHandler" value="gcc.bc.onTemplateLoad" />'+
-					'<param name="templateReadyHandler" value="gcc.bc.onTemplateReady" />'+
-				'</object>'
-		};
 	}])
 
 ;
@@ -206,6 +121,7 @@ angular.module('gcc.video',['gcc.content','brightcove'])
 				title: '@',
 				videoCaption: '@',
 				url: '@',
+				mimetype: '@',
 				videoStill: '@',
 				thumbnail: '@'
 			},
@@ -217,6 +133,7 @@ angular.module('gcc.video',['gcc.content','brightcove'])
 					title: scope.title,
 					videoCaption: scope.videoCaption,
 					url: scope.url,
+					mimetype: scope.mimetype,
 					videoStill: scope.videoStill,
 					thumbnail: scope.thumbnail,
 					priority: priority,
@@ -238,13 +155,12 @@ angular.module('gcc.video',['gcc.content','brightcove'])
 
 	.controller('VideoPlayerController',['$scope','VideoPlayer','Content',function($scope,VideoPlayer,Content){
 		var videoPlayer = new VideoPlayer();
-		videoPlayer.init();
 		$scope.$on('carousel:items:clicked',function(event,args){
 			console.log(event.name);
 			console.log(args);
 			var id = args.id;
 			var video = Content.videos(id);
-			videoPlayer.enqueue(video);
+			videoPlayer.cue(video);
 		});
 		$scope.$on('player:init',function(event,args){
 			console.log(event.name);

@@ -4,8 +4,6 @@
 		<meta charset="utf-8">
 		<meta http-equiv="X-UA-Compatible" content="IE=edge">
 		<meta name="viewport" content="width=device-width, initial-scale=1">
-		<link rel="stylesheet" type="text/css" href="bower_components/twitter/dist/css/bootstrap.min.css" />
-		<link rel="stylesheet" type="text/css" href="bower_components/twitter/dist/css/bootstrap-theme.min.css" />
 		<link rel="stylesheet" type="text/css" href="index.css" />
 		<style>
 			html {
@@ -41,18 +39,18 @@
 	<div id="ie8-console" style="display:none;"></div>
 	<div id="ipad-console" style="display:none;"></div>
 
-	<!-- Scripts -->
-		<script src="ie8-console-shim.js"></script>
-		<script src="ipad-console.js"></script>
-		<script src="http://admin.brightcove.com/js/BrightcoveExperiences.js"></script>
-		<script src="bower_components/angular/angular.js"></script>
-		<script src="index.js"></script>
-	<!-- Scripts -->
-
 	<div id="app" data-ng-app="app">
 
-		<div data-gcc-video data-id="0" data-type="url" data-url="http://eg.io/eg-video.mov"></div>
-		<div data-gcc-video data-id="1" data-type="url" data-url="http://eg.io/eg-video.mov"></div>
+		<div data-gcc-video 
+			data-id="{345345345345345345345}" 
+			data-type="url" 
+			data-title="Trip Extension" 
+			data-video-caption="Experience our 4-night Prague extension"
+			data-url="http://brightcove.vo.llnwd.net/e1/uds/pd/1711318825001/1711318825001_3680159352001_Peacock.mp4" 
+			data-mimetype="video/mp4"
+			data-video-still="http://www.gct.com/media/global/videos/gct/sge/sge_prague_ext_g42630" 
+			data-thumbnail="http://www.gct.com/media/global/videos/gct/sge/sge_prague_ext_g42630">
+		</div>
 
 		<div data-gcc-video 
 			data-id="{0987-098098-098098-0980}" 
@@ -60,23 +58,13 @@
 			data-title="Trip Extension" 
 			data-video-caption="Experience our 4-night Prague extension"
 			data-url="http://a9.g.akamai.net/f/9/137969/30d/grandcircle.download.akamai.com/137969/media/video/gct/prague-sge-ext-cl.mov" 
+			data-mimetype="video/quicktime"
 			data-video-still="http://www.gct.com/media/global/videos/gct/sge/sge_prague_ext_g42630" 
 			data-thumbnail="http://www.gct.com/media/global/videos/gct/sge/sge_prague_ext_g42630">
 		</div>
 
-		<div data-gcc-video data-id="3" data-type="url" data-url="http://eg.io/eg-video.mov"></div>
-		<div data-gcc-video data-id="4" data-type="url" data-url="http://eg.io/eg-video.mov"></div>
-		<div data-gcc-video data-id="5" data-type="url" data-url="http://eg.io/eg-video.mov"></div>
-
 		<div data-ng-controller="VideoPlayerController">
-			<div data-bc-video-player 
-				data-eid="MyExperience" 
-				data-pid="3917049043001" 
-				data-pkey="AQ~~,AAADj5LxskE~,uHgOBcd9fF_gWgPv_64aTjl8cc4Bu8K4" 
-				data-vid="3917841729001" 
-				data-height="300" 
-				data-width="450">
-			</div>
+			<video id="eg-player" data-account="1711318825001" data-player="default" data-embed="default" class="video-js" controls></video>
 		</div>
 
 		<div data-ng-controller="CarouselController">
@@ -93,6 +81,14 @@
 		</div>
 
 	</div>
+
+	<!-- Scripts -->
+		<script src="ie8-console-shim.js"></script>
+		<script src="ipad-console.js"></script>
+		<script src="//players.brightcove.net/1711318825001/default_default/index.min.js"></script>
+		<script src="bower_components/angular/angular.js"></script>
+		<script src="index.js"></script>
+	<!-- Scripts -->
 
 </body>
 </html>
